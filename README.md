@@ -1,83 +1,164 @@
-# django-package-boilerplate
+# Django NiceAuth Library
 
-## 1. Installation
+A Django library for integrating NICE authentication services. This library provides an interface for generating authentication data, retrieving authentication URLs, and verifying authentication results.
 
-The preferred installation method is directly from pypi:
+## Overview
 
-```bash
-# Create promgen setting directory.
-$ pip install -U django-package-app
-```
+`django-niceauth` is a Django library that provides an interface for interacting with the NICE authentication API. It supports obtaining tokens, generating encrypted tokens, and creating URLs for NICE authentication services.
 
-## 2. Quickstart
+## Requirements
 
-In ``settings.py``:
+- Python 3.6+
+- Django 3.0+
+- `nice_auth` library
+
+## Installation
+
+1. **Install the library:**
+
+    ```bash
+    pip install django-niceauth
+    ```
+
+2. **Add the library to your Django project:**
+
+    Add `'niceauth'` to your `INSTALLED_APPS` in the Django settings file.
+
+    ```python
+    INSTALLED_APPS = [
+        ...
+        'niceauth',
+    ]
+    ```
+
+3. **Set up your environment variables:**
+
+    Create a `.env` file in the root directory and add the following configurations:
+
+    ```env
+    NICE_AUTH_BASE_URL=https://svc.niceapi.co.kr:22001
+    NICE_CLIENT_ID=your_client_id
+    NICE_CLIENT_SECRET=your_client_secret
+    NICE_PRODUCT_ID=your_product_id
+    NICE_RETURN_URL=https://yourdomain.com/verify
+    NICE_AUTHTYPE=M
+    NICE_POPUPYN=N
+    ```
+
+4. **Apply the migrations:**
+
+    ```bash
+    python manage.py migrate
+    ```
+
+## Configuration
+
+Before using the library, you need to set up the necessary configuration values in your `.env` file as shown above.
+
+## Usage
+
+### Models
+
+The library includes the following models to store authentication requests and results:
+
+- `NiceAuthRequest`: Stores the request data.
+- `NiceAuthResult`: Stores the result data.
+
+### API Endpoints
+
+The library provides the following API endpoints:
+
+1. **Get NICE Authentication Data**
+
+    - **URL:** `/api/niceauth/data/`
+    - **Method:** `POST`
+    - **Response:**
+
+        ```json
+        {
+            "request_no": "REQUEST_NO",
+            "enc_data": "ENCRYPTED_DATA",
+            "integrity_value": "INTEGRITY_VALUE",
+            "token_version_id": "TOKEN_VERSION_ID"
+        }
+        ```
+
+2. **Get NICE Authentication URL**
+
+    - **URL:** `/api/niceauth/url/`
+    - **Method:** `POST`
+    - **Response:**
+
+        ```json
+        {
+            "nice_auth_url": "https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb?m=service&token_version_id=TOKEN_VERSION_ID&enc_data=ENCRYPTED_DATA&integrity_value=INTEGRITY_VALUE"
+        }
+        ```
+
+3. **Verify NICE Authentication Result**
+
+    - **URL:** `/api/niceauth/verify/`
+    - **Method:** `POST`
+    - **Request Body:**
+
+        ```json
+        {
+            "enc_data": "ENCRYPTED_DATA",
+            "token_version_id": "TOKEN_VERSION_ID",
+            "integrity_value": "INTEGRITY_VALUE"
+        }
+        ```
+    - **Response:**
+
+        ```json
+        {
+            "resultcode": "0000",
+            "requestno": "REQUEST_NO",
+            "sitecode": "SITE_CODE",
+            ...
+        }
+        ```
+
+### Example Usage
+
+#### Initializing the Service
+
+First, you need to initialize the `NiceAuthService` with the necessary configuration values:
 
 ```python
-INSTALLED_APPS = [
-    ...,
-    'django_package_app'
-]
-```
+from nice_auth.services import NiceAuthService
 
-2. In ``urls.py``:
+service = NiceAuthService(
+    base_url=settings.NICE_AUTH_BASE_URL,
+    client_id=settings.NICE_CLIENT_ID,
+    client_secret=settings.NICE_CLIENT_SECRET,
+    product_id=settings.NICE_PRODUCT_ID,
+    return_url=settings.NICE_RETURN_URL,
+    authtype=settings.NICE_AUTHTYPE,
+    popupyn=settings.NICE_POPUPYN
+)
+
+### Getting NICE Authentication Data
 
 ```python
-from django.urls import path, include
-
-urlpatterns = [
-    ...,
-    path('django_package_app/', include('django_package_app.urls')),
-]
+auth_data = service.get_nice_auth()
 ```
 
-3. Run ``python manage.py migrate``
-Create the models.
+### Getting NICE Authentication URL
+
+```python
+nice_url = service.get_nice_auth_url()
+```
+
+### Verifying NICE Authentication Result
+
+```python
+result_data = service.verify_auth_result(enc_data, key, iv)
+```
+
+## Running Tests
+To run the tests, use the following command:
+
 ```bash
-$ python manage.py migrate
+python manage.py test
 ```
-
-## 3. Configuration
-- Language setting: Todo
-
-## 4. Update Package
-
-In ``setup.cfg``, upgrade version
-```
-[metadata]
-name = django-package-app
-version = x.x.x
-...
-```
-
-Build package
-```bash
-$ python setup.py sdist bdist_wheel
-```
-
-Deploy package
-```bash
-$ twine upload --verbose dist/django-package-app-x.x.x.tar.gz
-```
-
-## The MIT License
-
-Copyright (c) 2023 Runners Co., Ltd.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
