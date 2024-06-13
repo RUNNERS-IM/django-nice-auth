@@ -2,6 +2,8 @@
 
 A Django library for integrating NICE authentication services. This library provides an interface for generating authentication data, retrieving authentication URLs, and verifying authentication results.
 
+**Current version: 0.1.0**
+
 ## Overview
 
 `django-niceauth` is a Django library that provides an interface for interacting with the NICE authentication API. It supports obtaining tokens, generating encrypted tokens, and creating URLs for NICE authentication services.
