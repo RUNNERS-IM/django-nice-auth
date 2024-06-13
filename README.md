@@ -1,4 +1,4 @@
-# Django NiceAuth Library
+# django-nice-auth
 
 A Django library for integrating NICE authentication services. This library provides an interface for generating authentication data, retrieving authentication URLs, and verifying authentication results.
 
