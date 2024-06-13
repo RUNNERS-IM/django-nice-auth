@@ -72,8 +72,8 @@ The library provides the following API endpoints:
 
 1. **Get NICE Authentication Data**
 
-    - **URL:** `/api/niceauth/data/`
-    - **Method:** `POST`
+    - **URL:** `/api/niceauth/`
+    - **Method:** `GET` or `POST`
     - **Response:**
 
         ```json
@@ -88,7 +88,7 @@ The library provides the following API endpoints:
 2. **Get NICE Authentication URL**
 
     - **URL:** `/api/niceauth/url/`
-    - **Method:** `POST`
+    - **Method:** `GET` or `POST`
     - **Response:**
 
         ```json
@@ -100,7 +100,7 @@ The library provides the following API endpoints:
 3. **Verify NICE Authentication Result**
 
     - **URL:** `/api/niceauth/verify/`
-    - **Method:** `POST`
+    - **Method:** `GET` or `POST`
     - **Request Body:**
 
         ```json

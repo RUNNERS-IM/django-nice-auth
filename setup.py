@@ -9,6 +9,8 @@ setup(
         "requests",
         "pycryptodome",
         "nice_auth",
+        "djangorestframework",
+        "drf-yasg",
     ],
     author="RUNNERS",
     author_email="dev@runners.im",

@@ -7,6 +7,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'drf_yasg',
     'niceauth',
 ]
 
@@ -117,3 +119,10 @@ NICE_PRODUCT_ID = os.getenv('NICE_PRODUCT_ID')
 NICE_RETURN_URL = os.getenv('NICE_RETURN_URL')
 NICE_AUTHTYPE = os.getenv('NICE_AUTHTYPE')
 NICE_POPUPYN = os.getenv('NICE_POPUPYN')
+
+# DRF 기본 설정
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
