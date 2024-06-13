@@ -28,7 +28,7 @@ A Django library for integrating NICE authentication services. This library prov
 
     ```python
     INSTALLED_APPS = [
-        ...
+        ...,
         'niceauth',
     ]
     ```
