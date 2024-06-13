@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -23,12 +23,13 @@ class GetNiceAuthView(View):
 
     def handle_request(self, request):
         try:
+            return_url = request.GET.get('return_url') if request.method == 'GET' else request.POST.get('return_url')
             service = NiceAuthService(
                 base_url=settings.NICE_AUTH_BASE_URL,
                 client_id=settings.NICE_CLIENT_ID,
                 client_secret=settings.NICE_CLIENT_SECRET,
                 product_id=settings.NICE_PRODUCT_ID,
-                return_url=settings.NICE_RETURN_URL,
+                return_url=return_url or settings.NICE_RETURN_URL,
                 authtype=settings.NICE_AUTHTYPE,
                 popupyn=settings.NICE_POPUPYN
             )
@@ -39,7 +40,8 @@ class GetNiceAuthView(View):
                 integrity_value=auth_data["integrity_value"],
                 token_version_id=auth_data["token_version_id"],
                 key=auth_data["key"],
-                iv=auth_data["iv"]
+                iv=auth_data["iv"],
+                return_url=return_url  # Store return_url
             )
             return JsonResponse({
                 'request_no': auth_request.request_no,
@@ -66,12 +68,13 @@ class GetNiceAuthUrlView(View):
 
     def handle_request(self, request):
         try:
+            return_url = request.GET.get('return_url') if request.method == 'GET' else request.POST.get('return_url')
             service = NiceAuthService(
                 base_url=settings.NICE_AUTH_BASE_URL,
                 client_id=settings.NICE_CLIENT_ID,
                 client_secret=settings.NICE_CLIENT_SECRET,
                 product_id=settings.NICE_PRODUCT_ID,
-                return_url=settings.NICE_RETURN_URL,
+                return_url=return_url or settings.NICE_RETURN_URL,
                 authtype=settings.NICE_AUTHTYPE,
                 popupyn=settings.NICE_POPUPYN
             )
@@ -82,7 +85,8 @@ class GetNiceAuthUrlView(View):
                 integrity_value=auth_data["integrity_value"],
                 token_version_id=auth_data["token_version_id"],
                 key=auth_data["key"],
-                iv=auth_data["iv"]
+                iv=auth_data["iv"],
+                return_url=return_url  # Store return_url
             )
             nice_url = f"https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb?m=service&token_version_id={auth_data['token_version_id']}&enc_data={auth_data['enc_data']}&integrity_value={auth_data['integrity_value']}"
             return JsonResponse({'nice_auth_url': nice_url})
@@ -97,14 +101,20 @@ class VerifyNiceAuthView(View):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-    def post(self, request):
-        try:
-            data = request.POST
-            enc_data = data['enc_data']
-            token_version_id = data['token_version_id']
-            integrity_value = data['integrity_value']
+    def get(self, request):
+        return self.handle_request(request)
 
-            auth_request = get_object_or_404(NiceAuthRequest, token_version_id=token_version_id)
+    def post(self, request):
+        return self.handle_request(request)
+
+    def handle_request(self, request):
+        try:
+            data = request.GET if request.method == 'GET' else request.POST
+            enc_data = data.get('enc_data')
+            token_version_id = data.get('token_version_id')
+            integrity_value = data.get('integrity_value')
+
+            auth_request = get_object_or_404(NiceAuthRequest, token_version_id=token_version_id, integrity_value=integrity_value)
             key = auth_request.key
             iv = auth_request.iv
 
@@ -113,7 +123,7 @@ class VerifyNiceAuthView(View):
                 client_id=settings.NICE_CLIENT_ID,
                 client_secret=settings.NICE_CLIENT_SECRET,
                 product_id=settings.NICE_PRODUCT_ID,
-                return_url=settings.NICE_RETURN_URL,
+                return_url=auth_request.return_url,  # Use stored return_url
                 authtype=settings.NICE_AUTHTYPE,
                 popupyn=settings.NICE_POPUPYN
             )
@@ -121,7 +131,7 @@ class VerifyNiceAuthView(View):
             result_data = service.verify_auth_result(enc_data, key, iv)
             auth_result = NiceAuthResult.objects.create(
                 request=auth_request,
-                result_data=result_data
+                result=result_data
             )
             return JsonResponse(result_data)
         except NiceAuthException as e:

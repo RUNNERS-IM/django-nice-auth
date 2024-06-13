@@ -20,6 +20,9 @@ class NiceAuthRequest(BaseModel):
     token_version_id = models.CharField(max_length=100)
     key = models.CharField(max_length=32)
     iv = models.CharField(max_length=32)
+    return_url = models.URLField(max_length=200, null=True, blank=True)
+    authtype = models.CharField(max_length=20, null=True, blank=True)
+    popupyn = models.CharField(max_length=1, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Nice Auth Request'
@@ -29,7 +32,7 @@ class NiceAuthRequest(BaseModel):
 
 class NiceAuthResult(BaseModel):
     request = models.OneToOneField(NiceAuthRequest, on_delete=models.CASCADE)
-    result_data = models.JSONField()
+    result = models.JSONField()
 
     class Meta:
         verbose_name = 'Nice Auth Result'
