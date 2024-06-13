@@ -19,7 +19,7 @@ A Django library for integrating NICE authentication services. This library prov
 1. **Install the library:**
 
     ```bash
-    pip install django-niceauth
+    pip install -U django-nice-auth
     ```
 
 2. **Add the library to your Django project:**
