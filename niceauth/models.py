@@ -119,6 +119,96 @@ class NiceAuthResult(BaseModel):  # 상속받도록 수정
         default=False,
         help_text="Verification status"
     )
+    birthdate = models.CharField(
+        'Birthdate',
+        max_length=8,
+        blank=True,
+        null=True,
+        help_text='Birthdate of the user in YYYYMMDD format.'
+    )
+    gender = models.CharField(
+        'Gender',
+        max_length=1,
+        blank=True,
+        null=True,
+        help_text='Gender of the user. 1 for male, 2 for female.'
+    )
+    di = models.CharField(
+        'DI',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='DI (Duplication Information) value.'
+    )
+    mobileco = models.CharField(
+        'Mobile Carrier',
+        max_length=1,
+        blank=True,
+        null=True,
+        help_text='Mobile carrier code.'
+    )
+    receivedata = models.TextField(
+        'Receive Data',
+        blank=True,
+        null=True,
+        help_text='Additional data received from the authentication.'
+    )
+    mobileno = models.CharField(
+        'Mobile Number',
+        max_length=11,
+        blank=True,
+        null=True,
+        help_text='Mobile number of the user.'
+    )
+    nationalinfo = models.CharField(
+        'National Info',
+        max_length=1,
+        blank=True,
+        null=True,
+        help_text='National information code.'
+    )
+    authtype = models.CharField(
+        'Authentication Type',
+        max_length=1,
+        blank=True,
+        null=True,
+        help_text='Type of authentication performed.'
+    )
+    sitecode = models.CharField(
+        'Site Code',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Site code where the authentication was performed.'
+    )
+    utf8_name = models.CharField(
+        'UTF8 Name',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='UTF8 encoded name of the user.'
+    )
+    enctime = models.CharField(
+        'Encryption Time',
+        max_length=14,
+        blank=True,
+        null=True,
+        help_text='Time when the data was encrypted in YYYYMMDDHHMMSS format.'
+    )
+    name = models.CharField(
+        'Name',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Name of the user.'
+    )
+    resultcode = models.CharField(
+        'Result Code',
+        max_length=4,
+        blank=True,
+        null=True,
+        help_text='Result code of the authentication.'
+    )
 
     class Meta:
         verbose_name = 'Nice Auth Result'

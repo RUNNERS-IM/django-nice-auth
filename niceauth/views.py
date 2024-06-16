@@ -126,6 +126,7 @@ class GetNiceAuthUrlView(NiceAuthBaseView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class VerifyNiceAuthView(APIView):
     """
     View to verify the result of NICE authentication.
@@ -188,7 +189,25 @@ class VerifyNiceAuthView(APIView):
             result_data = service.verify_auth_result(enc_data, key, iv)
             auth_result, created = NiceAuthResult.objects.get_or_create(
                 request=auth_request,
-                defaults={'result': result_data, 'request_no': auth_request.request_no, 'enc_data': enc_data, 'is_verified': True}
+                defaults={
+                    'result': result_data,
+                    'request_no': auth_request.request_no,
+                    'enc_data': enc_data,
+                    'is_verified': True,
+                    'birthdate': result_data.get('birthdate'),
+                    'gender': result_data.get('gender'),
+                    'di': result_data.get('di'),
+                    'mobileco': result_data.get('mobileco'),
+                    'receivedata': result_data.get('receivedata'),
+                    'mobileno': result_data.get('mobileno'),
+                    'nationalinfo': result_data.get('nationalinfo'),
+                    'authtype': result_data.get('authtype'),
+                    'sitecode': result_data.get('sitecode'),
+                    'utf8_name': result_data.get('utf8_name'),
+                    'enctime': result_data.get('enctime'),
+                    'name': result_data.get('name'),
+                    'resultcode': result_data.get('resultcode'),
+                }
             )
             serializer = NiceAuthResultSerializer(auth_result)
 
