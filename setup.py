@@ -9,7 +9,7 @@ setup(
         "django>=3.0",
         "requests",
         "pycryptodome",
-        "nice_auth",
+        "nice_auth>=0.1.5",
         "djangorestframework",
         "drf-yasg",
     ],
