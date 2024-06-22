@@ -150,7 +150,6 @@ class VerifyNiceAuthView(APIView):
         manual_parameters=[
             openapi.Parameter('enc_data', openapi.IN_QUERY, description="Encrypted Data", type=openapi.TYPE_STRING),
             openapi.Parameter('token_version_id', openapi.IN_QUERY, description="Token Version ID", type=openapi.TYPE_STRING),
-            openapi.Parameter('integrity_value', openapi.IN_QUERY, description="Integrity Value", type=openapi.TYPE_STRING),
         ],
         responses={
             200: NiceAuthResultSerializer(many=False),
@@ -167,9 +166,8 @@ class VerifyNiceAuthView(APIView):
             serializer.is_valid(raise_exception=True)
             enc_data = serializer.validated_data['enc_data']
             token_version_id = serializer.validated_data['token_version_id']
-            integrity_value = serializer.validated_data['integrity_value']
 
-            auth_request = NiceAuthRequest.objects.filter(token_version_id=token_version_id, integrity_value=integrity_value).first()
+            auth_request = NiceAuthRequest.objects.filter(token_version_id=token_version_id).first()
             if not auth_request:
                 raise NotFound(detail="NiceAuthRequest with the specified token_version_id and integrity_value does not exist.")
 

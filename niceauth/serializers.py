@@ -44,4 +44,4 @@ class VerifyNiceAuthSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = NiceAuthRequest
-        fields = ['enc_data', 'token_version_id', 'integrity_value']
+        fields = ['enc_data', 'token_version_id']
