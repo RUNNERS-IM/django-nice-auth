@@ -101,31 +101,6 @@ class GetNiceAuthDataView(NiceAuthBaseView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class GetNiceAuthUrlView(NiceAuthBaseView):
-    """
-    View to handle the retrieval of NICE authentication URL.
-    """
-    def handle_request(self, request):
-        try:
-            params = handle_get_or_post_request(request)
-            service = NiceAuthService(
-                base_url=settings.NICE_AUTH_BASE_URL,
-                client_id=settings.NICE_CLIENT_ID,
-                client_secret=settings.NICE_CLIENT_SECRET,
-                product_id=settings.NICE_PRODUCT_ID,
-                return_url=params['return_url'] or settings.NICE_RETURN_URL,
-                authtype=params['authtype'] or settings.NICE_AUTHTYPE,
-                popupyn=params['popupyn'] or settings.NICE_POPUPYN
-            )
-            auth_data = service.get_nice_auth()
-            auth_request = create_nice_auth_request({**auth_data, **params})
-            nice_url = f"https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb?m=service&token_version_id={auth_data['token_version_id']}&enc_data={auth_data['enc_data']}&integrity_value={auth_data['integrity_value']}"
-            return Response({'url': nice_url})
-        except NiceAuthException as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class VerifyNiceAuthView(APIView):
     """
