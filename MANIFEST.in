@@ -3,3 +3,5 @@ include LICENSE
 include MANIFEST.in
 include setup.py
 include setup.cfg
+include niceauth/locale/*/LC_MESSAGES/*.mo
+include niceauth/locale/*/LC_MESSAGES/*.po
