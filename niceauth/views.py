@@ -180,6 +180,8 @@ class VerifyNiceAuthView(APIView):
                     'enctime': result_data.get('enctime'),
                     'name': result_data.get('name'),
                     'resultcode': result_data.get('resultcode'),
+                    'responseno': result_data.get('responseno'),  # Add responseno
+                    'redirect_url': auth_request.redirect_url,  # Add redirect_url
                 }
             )
             serializer = NiceAuthResultSerializer(auth_result)
@@ -187,10 +189,6 @@ class VerifyNiceAuthView(APIView):
             # Update the is_verified field of NiceAuthRequest
             auth_request.is_verified = True
             auth_request.save()
-
-            # Check if redirect_url is present
-            if auth_request.redirect_url:
-                return HttpResponseRedirect(auth_request.redirect_url)
 
             return Response(serializer.data)
         except ValidationError as e:

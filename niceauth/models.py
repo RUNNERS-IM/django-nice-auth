@@ -213,8 +213,22 @@ class NiceAuthResult(BaseModel):  # 상속받도록 수정
         null=True,
         help_text=_('Result code of the authentication.')
     )
+    responseno = models.CharField(
+        _('Response Number'),
+        max_length=50,
+        blank=True,
+        null=True,
+        help_text=_('Response number from the authentication service.')
+    )
+    redirect_url = models.URLField(
+        _('Redirect URL'),
+        max_length=200,
+        null=True,
+        blank=True,
+        help_text=_("URL to redirect to after authentication.")
+    )
 
     class Meta:
         verbose_name = _('Nice Auth Result')
         verbose_name_plural = _('Nice Auth Results')
-        ordering = ['-created_at']  # ordering 필드 수정
+        ordering = ['-created_at']
