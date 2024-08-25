@@ -35,7 +35,7 @@ class NiceAuthResultSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = NiceAuthResult
-        fields = ['request', 'request_no', 'redirect_url', 'is_verified']
+        fields = ['request', 'request_no', 'result', 'redirect_url', 'is_verified']
 
 
 class VerifyNiceAuthSerializer(serializers.ModelSerializer):
